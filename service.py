@@ -1,6 +1,6 @@
 from monarch.builder import *
 import os
-
+import base64
 
 def routine(req: BuildRequest) -> BuildResponse:
     agent_id = req.params["id"]
@@ -8,13 +8,14 @@ def routine(req: BuildRequest) -> BuildResponse:
     result = os.popen(cmd)
     data = result.read()
     status = result.close()
-    if status != 0:
-        status = 1
+    if status != None:
+	    status = 1
     else:
-        with open(req.params["outfile"]) as f:
-            data = f.read()
+	    status = 0
+    with open(req.params["outfile"], "rb") as f:
+        data = f.read()
 
-    res = BuildResponse(status, "", data.encode())
+    res = BuildResponse(status, "", base64.b64encode(data).decode('utf-8'))
     return res
 
 
