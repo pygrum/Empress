@@ -4,4 +4,4 @@ WORKDIR /app
 
 COPY . .
 
-CMD [ "./royal.yaml", "./service.py" ]
+CMD [ "/app/royal.yaml", "/app/service.py" ]
