@@ -1,0 +1,34 @@
+# The royal.yaml file exists at the root of every agent project.
+# It's used to set up the builder (and if applicable, translation) services.
+# The following file is simply an EXAMPLE of how a royal.yaml config file looks like, and should not be used
+# anywhere outside a testing environment.
+
+name: list-agent
+version: 1.0
+author: pygrum
+url: https://github.com/pygrum/monarch
+supported_os: [ linux ]
+
+# The command schema defines the possible commands that can be used with the agent.
+# If the agent doesn't use commands to operate, then this configuration parameter is not necessary.
+# On installation of the agent, the command schema is used by the builder when an operator requests to
+# view commands.
+cmd_schema:
+  - name: ls
+    usage: ls [path]
+    n_args: 1
+    admin: false
+    # If opcode is specified, the provided integer opcode is used in place of the command name, promoting better OpSec
+    opcode: 0x1
+    description_short: list files in a directory.
+    description_long: list files in a directory.
+
+builder:
+  # agent source code root
+  source_dir: /src
+  # These are custom build arguments that can be used for building, in addition to default build arguments provided
+  # by the C2 itself.
+  build_args:
+    - name: email
+      description: operator's email address
+      required: true
