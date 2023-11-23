@@ -6,7 +6,7 @@
 name: list-agent
 version: 1.0
 author: pygrum
-url: https://github.com/pygrum/monarch
+url: https://github.com/pygrum/Empress
 supported_os: [ linux ]
 
 # The command schema defines the possible commands that can be used with the agent.
