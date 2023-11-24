@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"bytes"
 	"encoding/json"
 	"github.com/pygrum/Empress/commands"
@@ -21,10 +22,23 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
 	client := &http.Client{
 		Timeout: maxDuration,
 	}
+	var firstReq *http.Response
 	for {
+		firstReq, err = client.Do(req)
+		if err == nil {
+			break
+		}
+	}
+	// add cookies after first authentcation
+	for {
+		for _, c := range firstReq.Cookies() {
+			req.AddCookie(c)
+		}
+		fmt.Println(req.Cookies())
 		reqObj := &commands.Request{}
 		resObj := &commands.Response{}
 		respReq, err := client.Do(req)
@@ -38,6 +52,7 @@ func main() {
 		resObj.RequestID = reqObj.RequestID
 		switch reqObj.Opcode {
 		case 0x1:
+			fmt.Println("running ls")
 			commands.CmdLS(reqObj, resObj)
 		default:
 			resObj.Status = 0
@@ -47,6 +62,7 @@ func main() {
 		if err != nil {
 			panic(err)
 		}
+		
 		continue // now request is a new object, we send it as a response on the next iteration
 	}
 }
