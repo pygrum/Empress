@@ -16,9 +16,9 @@ supported_os: [ linux ]
 cmd_schema:
   - name: ls
     usage: ls [path]
-    n_args: -1
-    admin: false
-    # If opcode is specified, the provided integer opcode is used in place of the command name, promoting better OpSec
+    min_args: 0
+    max_args: 1
+    # When opcode is specified, the provided integer opcode is used in place of the command name, promoting better OpSec
     opcode: 0x1
     description_short: list files in a directory.
     description_long: list files in a directory.

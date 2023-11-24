@@ -1,45 +1,47 @@
 package commands
 
 import (
-	"fmt"
 	"os"
 )
 
 func CmdLS(req *Request, response *Response) {
-	path := string(req.Args[0])
-	entries, err := os.ReadDir(path)
-	if err != nil {
-		response.Status = 1
-		response.Responses = []ResponseDetail{
-			{Dest: 1, Data: []byte(fmt.Sprintf("could not retrieve entries: %v", err))},
-		}
-		return
+	if len(req.Args) == 0 {
+		req.Args = append(req.Args, []byte("."))
 	}
-	response.Status = 0
-	for _, d := range entries {
-		response.Responses = append(response.Responses, ResponseDetail{
-			Dest: 1,
-			Data: []byte(d.Name()),
-		})
+	for _, path := range req.Args {
+		entries, err := os.ReadDir(string(path))
+		if err != nil {
+			response.Status = 1
+			response.Responses = []ResponseDetail{
+				{Dest: 1, Data: []byte(err.Error())},
+			}
+			return
+		}
+		for _, d := range entries {
+			response.Responses = append(response.Responses, ResponseDetail{
+				Dest: 1,
+				Data: []byte(d.Name()),
+			})
+		}
 	}
 }
 
 type Request struct {
-	AgentID   string
-	RequestID string
-	Opcode    int32
-	Args      [][]byte
+	AgentID   string   `json:"agent_id"`
+	RequestID string   `json:"request_id"`
+	Opcode    int32    `json:"opcode"`
+	Args      [][]byte `json:"args"`
 }
 
 type ResponseDetail struct {
-	Dest int32  // Where to send response to (file, stdout)
-	Name string // Name of file to save, if applicable
-	Data []byte // file or output data
+	Dest int32  `json:"dest"` // Where to send response to (file, stdout)
+	Name string `json:"name"` // Name of file to save, if applicable
+	Data []byte `json:"data"` // file or output data
 }
 
 type Response struct {
-	AgentID   string
-	RequestID string
-	Status    int32
-	Responses []ResponseDetail
+	AgentID   string           `json:"agent_id"`
+	RequestID string           `json:"request_id"`
+	Status    int32            `json:"status"`
+	Responses []ResponseDetail `json:"responses"`
 }
