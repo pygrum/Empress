@@ -16,7 +16,7 @@ supported_os: [ linux ]
 cmd_schema:
   - name: ls
     usage: ls [path]
-    n_args: 1
+    n_args: -1
     admin: false
     # If opcode is specified, the provided integer opcode is used in place of the command name, promoting better OpSec
     opcode: 0x1
