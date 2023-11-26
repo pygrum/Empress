@@ -9,10 +9,10 @@ author: pygrum
 url: https://github.com/pygrum/Empress
 supported_os: [ linux ]
 
-# The command schema defines the possible commands that can be used with the agent.
-# If the agent doesn't use commands to operate, then this configuration parameter is not necessary.
+# The command schema defines the possible tasks that can be used with the agent.
+# If the agent doesn't use tasks to operate, then this configuration parameter is not necessary.
 # On installation of the agent, the command schema is used by the builder when an operator requests to
-# view commands.
+# view tasks.
 cmd_schema:
   - name: ls
     usage: ls [path]
@@ -29,6 +29,39 @@ builder:
   # These are custom build arguments that can be used for building, in addition to default build arguments provided
   # by the C2 itself.
   build_args:
-    - name: email
-      description: operator's email address
+    - name: mode
+      type: string
+      description: the mode of the compiled agent - session / beacon
+      default: session
+      required: true
+      choices:
+        - session
+        - beacon
+
+    - name: debug
+      type: bool
+      description: compile the agent in debug / verbose mode, meaning that all errors are included
+      default: false
+      required: true
+
+    - name: callback_interval
+      type: int
+      description: the agent attempts to register to the server every callback_interval±(callback_salt/1000) seconds
+      default: 10
+      required: true
+    - name: callback_salt
+      type: int
+      description: the agent attempts to register to the server every callback_interval±(callback_salt/1000) seconds
+      default: 1000
+      required: true
+
+    - name: interval
+      type: int
+      description: In beacon mode, the agent calls back to the C2 server every interval±(salt/1000) seconds
+      default: 10
+      required: true
+    - name: salt
+      type: int
+      description: In beacon mode, the agent calls back to the C2 server every interval±(salt/1000) seconds
+      default: 1000
       required: true
