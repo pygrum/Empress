@@ -51,7 +51,7 @@ builder:
       required: true
     - name: callback_salt
       type: int
-      description: the agent attempts to register to the server every callback_interval±(callback_salt/1000) seconds
+      description: callback frequency variance in milliseconds
       default: 1000
       required: true
 
@@ -62,6 +62,6 @@ builder:
       required: true
     - name: salt
       type: int
-      description: In beacon mode, the agent calls back to the C2 server every interval±(salt/1000) seconds
+      description: beacon / command callback frequency variance in milliseconds
       default: 1000
       required: true
