@@ -23,7 +23,7 @@ func (c *Client) Register(regInfo *transport.Registration) error {
 	if err != nil {
 		return err
 	}
-	addr := fmt.Sprintf("http://%s:%d/", config.C.C2Host, config.C.C2Port)
+	addr := fmt.Sprintf("http://%s:%s/", config.C.C2Host, config.C.C2Port)
 	u, err := url.Parse(addr)
 	if err != nil {
 		return err
