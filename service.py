@@ -1,3 +1,4 @@
+import random
 import subprocess
 
 from monarch.builder import *
@@ -7,11 +8,7 @@ import base64
 
 
 def routine(req: BuildRequest) -> BuildResponse:
-    out = req.params.get("outfile")
-    if out is None or out == "":
-        out = "empress"
-
-    out = str(os.path.basename(out))
+    out = "empress"
 
     agent_id = req.params.get("id")  # definitely exists
     host = req.params.get("host")
@@ -42,6 +39,13 @@ def routine(req: BuildRequest) -> BuildResponse:
         }
         j_string = json.dumps(j)
         f.write(j_string)
+
+    if os.path.exists(out):
+        try:
+            os.remove(out)
+        # if dir has the same name or whatever
+        except OSError:
+            out = random.randbytes(10).decode('utf-8')
 
     cmd = "go build -o %s " % out
     if debug:
