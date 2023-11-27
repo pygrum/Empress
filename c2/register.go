@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/pygrum/Empress/config"
 	"github.com/pygrum/Empress/transport"
+	log "github.com/sirupsen/logrus"
 	"net/http"
 	"net/url"
 	"os"
@@ -36,9 +37,11 @@ func (c *Client) Register(regInfo *transport.Registration) error {
 	if err != nil {
 		return err
 	}
+	log.Info("sent registration request, received response")
 	if resp.StatusCode != http.StatusOK {
 		return errors.New("")
 	}
+	log.Info("received cookies: %v", resp.Cookies())
 	c.HttpClient.Jar.SetCookies(u, resp.Cookies())
 	return nil
 }
