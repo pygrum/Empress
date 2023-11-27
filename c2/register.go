@@ -40,7 +40,8 @@ func (c *Client) Register(regInfo *transport.Registration) error {
 	if resp.StatusCode != http.StatusOK {
 		return errors.New("")
 	}
-	log.Info("received cookies: %v", c.HttpClient.Jar.Cookies(u))
+	log.Info("received cookies: %v", resp.Cookies())
+	c.HttpClient.Jar.SetCookies(u, resp.Cookies())
 	return nil
 }
 
