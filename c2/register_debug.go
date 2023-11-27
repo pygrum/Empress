@@ -5,7 +5,7 @@ package c2
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
+	"fmt"
 	"github.com/pygrum/Empress/config"
 	"github.com/pygrum/Empress/transport"
 	log "github.com/sirupsen/logrus"
@@ -34,7 +34,7 @@ func (c *Client) Register(regInfo *transport.Registration) error {
 		return err
 	}
 	if resp.StatusCode != http.StatusOK {
-		return errors.New("request failed with status code %d", resp.StatusCode)
+		return fmt.Errorf("request failed with status code %d", resp.StatusCode)
 	}
 	fields := make(log.Fields)
 	for _, c := range resp.Cookies() {
