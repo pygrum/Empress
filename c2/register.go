@@ -41,7 +41,6 @@ func (c *Client) Register(regInfo *transport.Registration) error {
 		return errors.New("")
 	}
 	log.Info("received cookies: %v", c.HttpClient.Jar.Cookies(u))
-	c.HttpClient.Jar.SetCookies(u, resp.Cookies())
 	return nil
 }
 

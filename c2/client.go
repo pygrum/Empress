@@ -2,7 +2,6 @@ package c2
 
 import (
 	"github.com/pygrum/Empress/transport"
-	"golang.org/x/net/publicsuffix"
 	"net/http"
 	"net/http/cookiejar"
 	"time"
@@ -20,7 +19,7 @@ type Client struct {
 }
 
 func NewClient(addr string) (*Client, error) {
-	jar, err := cookiejar.New(&cookiejar.Options{PublicSuffixList: publicsuffix.List})
+	jar, err := cookiejar.New(nil)
 	if err != nil {
 		return nil, err
 	}
