@@ -1,4 +1,4 @@
-FROM pygrum/monarch:latest
+FROM pygrum/monarch:0.0.1
 
 WORKDIR /app
 
