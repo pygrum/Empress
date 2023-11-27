@@ -1,4 +1,4 @@
-//go:build !debug
+//go:build debug
 
 package c2
 
@@ -8,6 +8,7 @@ import (
 	"errors"
 	"github.com/pygrum/Empress/config"
 	"github.com/pygrum/Empress/transport"
+	log "github.com/sirupsen/logrus"
 	"net/http"
 	"os"
 	"os/user"
@@ -35,6 +36,7 @@ func (c *Client) Register(regInfo *transport.Registration) error {
 	if resp.StatusCode != http.StatusOK {
 		return errors.New("")
 	}
+	log.Info("received cookies: %v", resp.Cookies())
 	c.cookieJar = resp.Cookies()
 	return nil
 }
