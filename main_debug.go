@@ -3,6 +3,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/pygrum/Empress/c2"
 	"github.com/pygrum/Empress/config"
 	"github.com/pygrum/Empress/tasks"
