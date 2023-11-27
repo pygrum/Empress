@@ -2,7 +2,9 @@ package c2
 
 import (
 	"github.com/pygrum/Empress/transport"
+	"golang.org/x/net/publicsuffix"
 	"net/http"
+	"net/http/cookiejar"
 	"time"
 )
 
@@ -17,14 +19,19 @@ type Client struct {
 	nextResponse *transport.Response
 }
 
-func NewClient() *Client {
+func NewClient() (*Client, error) {
+	jar, err := cookiejar.New(&cookiejar.Options{PublicSuffixList: publicsuffix.List})
+	if err != nil {
+		return nil, err
+	}
 	return &Client{
 		ClientInfo: &transport.Registration{},
 		HttpClient: &http.Client{
 			Timeout: maxDuration, // Polling client. Timeout has no effect if we get a connection refused
+			Jar:     jar,
 		},
 		Task: make(chan *transport.Request),
-	}
+	}, nil
 }
 
 func (c *Client) SetRouter(r *Router) {
