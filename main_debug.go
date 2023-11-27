@@ -41,7 +41,8 @@ func main() {
 
 func newClient() error {
 	var err error
-	client, err = c2.NewClient()
+	addr := fmt.Sprintf("http://%s:%s/", config.C.C2Host, config.C.C2Port)
+	client, err = c2.NewClient(addr)
 	if err != nil {
 		return err
 	}

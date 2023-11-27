@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"github.com/pygrum/Empress/config"
 	"github.com/pygrum/Empress/transport"
 	log "github.com/sirupsen/logrus"
@@ -24,7 +23,7 @@ func (c *Client) Register(regInfo *transport.Registration) error {
 	if err != nil {
 		return err
 	}
-	addr := fmt.Sprintf("http://%s:%s/", config.C.C2Host, config.C.C2Port)
+	addr := c.Address
 	u, err := url.Parse(addr)
 	if err != nil {
 		return err

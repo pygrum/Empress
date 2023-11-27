@@ -19,7 +19,7 @@ type Client struct {
 	nextResponse *transport.Response
 }
 
-func NewClient() (*Client, error) {
+func NewClient(addr string) (*Client, error) {
 	jar, err := cookiejar.New(&cookiejar.Options{PublicSuffixList: publicsuffix.List})
 	if err != nil {
 		return nil, err
@@ -30,7 +30,8 @@ func NewClient() (*Client, error) {
 			Timeout: maxDuration, // Polling client. Timeout has no effect if we get a connection refused
 			Jar:     jar,
 		},
-		Task: make(chan *transport.Request),
+		Address: addr,
+		Task:    make(chan *transport.Request),
 	}, nil
 }
 
