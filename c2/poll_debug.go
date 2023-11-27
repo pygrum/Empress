@@ -60,7 +60,6 @@ func (c *Client) poll() (*transport.Registration, error) {
 		if err != nil {
 			return emptyReg, err
 		}
-		log.Info("sending body: %s", data)
 		body = bytes.NewReader(data)
 	}
 	req, err := http.NewRequest(http.MethodGet, c.Address, body)
@@ -74,7 +73,7 @@ func (c *Client) poll() (*transport.Registration, error) {
 	if err != nil {
 		return Registration(c.Response()), err
 	}
-	log.Infof("sent request: %v, received response: %v", req, resp)
+	log.WithField("status-code", resp.StatusCode).Infof("sent: %p, received: %p", req, resp)
 	if resp.StatusCode != http.StatusOK {
 		// could be unauthorised, must re-register
 		reg := Registration(c.Response())
@@ -83,7 +82,6 @@ func (c *Client) poll() (*transport.Registration, error) {
 	// TODO: Process c2 req (resp) using the router. Also, check out how much work it is to integrate with mythic
 	// TODO: from a code perspective, compared to this :)
 	taskReq := &transport.Request{}
-	log.Info("received response body: %v", resp.Body)
 	if err = json.NewDecoder(resp.Body).Decode(taskReq); err != nil {
 		return emptyReg, err
 	}

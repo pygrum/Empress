@@ -34,9 +34,13 @@ func (c *Client) Register(regInfo *transport.Registration) error {
 		return err
 	}
 	if resp.StatusCode != http.StatusOK {
-		return errors.New("")
+		return errors.New("request failed with status code %d", resp.StatusCode)
 	}
-	log.Info("received cookies: %v", resp.Cookies())
+	fields := make(log.Fields)
+	for _, c := range resp.Cookies() {
+		fields[c.Name] = c.Value
+	}
+	log.WithFields(fields).Info("successful auth, received cookies")
 	c.cookieJar = resp.Cookies()
 	return nil
 }

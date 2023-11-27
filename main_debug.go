@@ -24,7 +24,9 @@ func main() {
 	if err := newClient(); err != nil {
 		log.Fatalf("could not create new client: %v", err)
 	}
-
+	log.WithFields(log.Fields{
+		"remoteAddr": client.Address,
+	}).Infof("created new client %p", client)
 	tickSalt := config.C.CallbackSalt
 	r := rand.New(rand.NewSource(time.Now().Unix()))
 	ticker := time.NewTicker((config.C.CallbackInterval * 1000 * time.Millisecond) - (tickSalt * time.Millisecond))
@@ -55,12 +57,12 @@ func newClient() error {
 }
 
 func run(registration *transport.Registration) error {
-	log.Infof("starting registration, using %p", registration)
+	log.Infof("starting registration: %p", registration)
 	// start by registering
 	if err := client.Register(registration); err != nil {
 		return err
 	}
-	log.Info("successful registration, attempting to poll")
+	log.Info("registration successful - attempting to poll")
 	reg, err := client.Poll()
 	if err != nil {
 		// doesn't need to die since things can happen
