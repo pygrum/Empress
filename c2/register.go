@@ -23,7 +23,7 @@ func (c *Client) Register(regInfo *transport.Registration) error {
 	if err != nil {
 		return err
 	}
-	addr := c.Address
+	addr := c.Address + "/login"
 	u, err := url.Parse(addr)
 	if err != nil {
 		return err
