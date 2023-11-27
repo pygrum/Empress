@@ -39,6 +39,8 @@ func CmdLS(req *transport.Request, response *transport.Response) {
 			_, _ = fmt.Fprintf(w, rowFmt,
 				info.Mode(), t, info.Size(), info.ModTime().Format(time.DateTime+" MST"), d.Name())
 		}
+		// must call to get an output
+		_ = w.Flush()
 		response.Responses = append(response.Responses, transport.ResponseDetail{
 			Status: transport.StatusSuccess,
 			Dest:   transport.DestStdout,
