@@ -78,7 +78,7 @@ func (c *Client) poll() (*transport.Registration, error) {
 			return Registration(c.Response()), err
 		}
 	}
-	log.Info("sent request: %v, received response: %v, status code: %d", req, resp, resp.StatusCode)
+	log.Info("sent request: %v, received response: %v", req, resp)
 	if resp.StatusCode != http.StatusOK {
 		// could be unauthorised, must re-register
 		reg := Registration(c.Response())
