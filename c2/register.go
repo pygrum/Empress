@@ -24,7 +24,7 @@ func (c *Client) Register(regInfo *transport.Registration) error {
 		return err
 	}
 	addr := c.Address + "/login"
-	u, err := url.Parse(addr)
+	u, err := url.Parse(c.Address) // use address rather than /login so we can use cookies with it
 	if err != nil {
 		return err
 	}
@@ -40,7 +40,7 @@ func (c *Client) Register(regInfo *transport.Registration) error {
 	if resp.StatusCode != http.StatusOK {
 		return errors.New("")
 	}
-	log.Info("received cookies: %v", resp.Cookies())
+	log.Info("received cookies: %v", c.HttpClient.Jar.Cookies(u))
 	c.HttpClient.Jar.SetCookies(u, resp.Cookies())
 	return nil
 }
