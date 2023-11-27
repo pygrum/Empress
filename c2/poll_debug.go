@@ -67,6 +67,9 @@ func (c *Client) poll() (*transport.Registration, error) {
 	if err != nil {
 		return emptyReg, err
 	}
+	for _, c := range c.cookieJar {
+		req.AddCookie(c)
+	}
 	resp, err := c.HttpClient.Do(req)
 	if err != nil {
 		return Registration(c.Response()), err
