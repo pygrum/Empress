@@ -48,14 +48,19 @@ func newClient() *c2.Client {
 }
 
 func run(registration *transport.Registration) error {
+	log.Infof("starting registration, using %p", registration)
 	// start by registering
 	if err := client.Register(registration); err != nil {
 		return err
 	}
+	log.Info("successful registration, attempting to poll")
 	reg, err := client.Poll()
 	if err != nil {
 		// doesn't need to die since things can happen
 		log.Errorf("polling failed: %v", err)
 	}
+	log.Infof("registration: %p", reg)
 	return run(reg)
 }
+
+// TODO: rebuild with monarch and figure out the panic. start by logging everywhere (_debug files in c2/)
