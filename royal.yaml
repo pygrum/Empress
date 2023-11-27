@@ -3,11 +3,11 @@
 # The following file is simply an EXAMPLE of how a royal.yaml config file looks like, and should not be used
 # anywhere outside a testing environment.
 
-name: list-agent
-version: 1.0
+name: Empress
+version: 0.0.1
 author: pygrum
 url: https://github.com/pygrum/Empress
-supported_os: [ linux ]
+supported_os: [ windows, linux, darwin ]
 
 # The command schema defines the possible tasks that can be used with the agent.
 # If the agent doesn't use tasks to operate, then this configuration parameter is not necessary.
