@@ -9,25 +9,96 @@ author: pygrum
 url: https://github.com/pygrum/Empress
 supported_os: [ windows, linux, darwin ]
 
-# The command schema defines the possible tasks that can be used with the agent.
-# If the agent doesn't use tasks to operate, then this configuration parameter is not necessary.
-# On installation of the agent, the command schema is used by the builder when an operator requests to
-# view tasks.
 cmd_schema:
+  - name: cd
+    usage: cd [path]
+    max_args: 1
+    opcode: 0
+    description_short: change current working directory
   - name: ls
     usage: ls [path]
-    min_args: 0
     max_args: 1
     # When opcode is specified, the provided integer opcode is used in place of the command name, promoting better OpSec
-    opcode: 0x1
-    description_short: list files in a directory.
-    description_long: list files in a directory.
+    opcode: 1
+    description_short: list files in a directory
+  - name: pwd
+    usage: pwd
+    max_args: 0 # - no need to specify again since it is 0 by default
+    opcode: 2
+    description_short: print current working directory
+  - name: whoami
+    usage: whoami
+    opcode: 3
+    description_short: show information about the current user
+  - name: id
+    usage: id
+    opcode: 3
+    description_short: alias for 'whoami' # because it uses the same opcode
+  - name: cat
+    usage: cat [path]
+    opcode: 4
+    min_args: 1
+    max_args: 1
+    description_short: print the contents of a file
+  - name: ps
+    usage: ps
+    opcode: 5
+    max_args: 0
+    description_short: list currently running processes
+  - name: kill
+    usage: kill [pids...]
+    opcode: 6
+    min_args: 1
+    description_short: kill the processes with the given PIDs
+  - name: exec
+    usage: exec [commands...]
+    opcode: 7
+    min_args: 1
+    description_short: execute commands on the target system
+  - name: rm
+    usage: rm [path...]
+    opcode: 8
+    min_args: 1
+    description_short: removes files or empty directories. use rmdir to remove a non-empty directory
+  - name: rmdir
+    usage: rmdir [directories...]
+    opcode: 9
+    min_args: 1
+    description_short: removes any directory, regardless of whether it is empty or not
+  - name: system
+    usage: system [keys...]
+    opcode: 10
+    description_short: get all environment variables if no args are specified, or environment variable values by names
+  - name: download
+    usage: download [files...]
+    opcode: 11
+    min_args: 1
+    description_short: download files from the c2 server
+  - name: upload
+    usage: upload [files...]
+    opcode: 12
+    min_args: 1
+    description_short: upload files to the c2 server
+  - name: cp
+    usage: cp [src] [dst]
+    opcode: 13
+    min_args: 2
+    max_args: 2
+    description_short: copy a file from src location to dst
+  - name: mv
+    usage: mv [src] [dst]
+    opcode: 14
+    min_args: 2
+    max_args: 2
+    description_short: move a file from src location to dst
+  - name: chmod
+    usage: chmod MODE [file]
+    opcode: 15
+    min_args: 2
+    max_args: 2
+    description_short: set file mode - e.g. 7777, 0100
 
 builder:
-  # agent source code root
-  source_dir: /src
-  # These are custom build arguments that can be used for building, in addition to default build arguments provided
-  # by the C2 itself.
   build_args:
     - name: mode
       type: string

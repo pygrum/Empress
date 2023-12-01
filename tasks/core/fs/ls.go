@@ -1,4 +1,4 @@
-package tasks
+package fs
 
 import (
 	"bytes"
@@ -16,9 +16,7 @@ func CmdLS(req *transport.Request, response *transport.Response) {
 	for _, path := range req.Args {
 		entries, err := os.ReadDir(string(path))
 		if err != nil {
-			response.Responses = []transport.ResponseDetail{
-				{Status: transport.StatusErrorWithMessage, Dest: transport.DestStdout, Data: []byte(err.Error())},
-			}
+			transport.ResponseWithError(response, err)
 			return
 		}
 		var b bytes.Buffer
@@ -31,6 +29,7 @@ func CmdLS(req *transport.Request, response *transport.Response) {
 			}
 			info, err := d.Info()
 			if err != nil {
+				transport.ResponseWithError(response, err)
 				_, _ = fmt.Fprintf(w, rowFmt,
 					"--", t, 0, "--", d.Name())
 				continue
@@ -41,7 +40,7 @@ func CmdLS(req *transport.Request, response *transport.Response) {
 		}
 		// must call to get an output
 		_ = w.Flush()
-		response.Responses = append(response.Responses, transport.ResponseDetail{
+		transport.AddResponse(response, transport.ResponseDetail{
 			Status: transport.StatusSuccess,
 			Dest:   transport.DestStdout,
 			Data:   b.Bytes(),

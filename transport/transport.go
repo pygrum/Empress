@@ -6,6 +6,7 @@ const (
 
 	DestFile   = 0
 	DestStdout = 1
+	DestNone   = -1
 )
 
 type Request struct {
@@ -43,4 +44,16 @@ type Registration struct {
 	IPAddress string `json:"ip_address"`
 	// Leftover response in case agent is de-authed but has a response, so it's still processed
 	Data *Response `json:"data"`
+}
+
+func ResponseWithError(r *Response, err error) {
+	r.Responses = append(r.Responses, ResponseDetail{
+		Status: StatusErrorWithMessage,
+		Dest:   DestStdout,
+		Data:   []byte(err.Error()),
+	})
+}
+
+func AddResponse(r *Response, detail ResponseDetail) {
+	r.Responses = append(r.Responses, detail)
 }

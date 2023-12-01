@@ -46,8 +46,7 @@ func newClient() error {
 		return err
 	}
 	router := c2.NewRouter()
-	router.HandleFunc(tasks.OpLS, tasks.CmdLS)
-
+	tasks.SetTasks(router)
 	client.SetRouter(router)
 	return nil
 }
