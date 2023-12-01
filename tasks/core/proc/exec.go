@@ -18,7 +18,14 @@ func CmdExec(req *transport.Request, response *transport.Response) {
 		cmd.Stdout = &cOut
 		cmd.Stderr = &cErr
 		if err := cmd.Run(); err != nil {
-			transport.ResponseWithError(response, errors.New(cErr.String()))
+			errStr := cErr.String()
+			if len(errStr) == 0 {
+				errStr = err.Error()
+				if len(errStr) == 0 {
+					errStr = cOut.String()
+				}
+			}
+			transport.ResponseWithError(response, errors.New(errStr))
 			return
 		}
 		transport.AddResponse(response, transport.ResponseDetail{
