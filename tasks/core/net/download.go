@@ -15,8 +15,8 @@ func CmdDownload(req *transport.Request, response *transport.Response) {
 	}()
 	for _, arg := range req.Args {
 		filesize := binary.BigEndian.Uint64(arg[:8])
-		fileBytes := arg[8 : filesize+1]
-		fileName := string(arg[filesize+1:])
+		fileBytes := arg[8 : filesize+8]
+		fileName := string(arg[filesize+8:])
 		if err := os.WriteFile(fileName, fileBytes, 0600); err != nil {
 			transport.ResponseWithError(response, err)
 			continue
