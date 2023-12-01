@@ -14,8 +14,7 @@ func CmdWhoami(_ *transport.Request, response *transport.Response) {
 	}
 	//User.GroupIds now uses a Go native implementation when cgo is not available.
 	// https://tip.golang.org/doc/go1.18
-	gid := findGroup(u.Gid)
-	id := "Name: " + u.Name + "\nUsername: " + u.Username + "\nGID: " + gid + "\nGroups: "
+	id := "Name: " + u.Name + "\nUsername: " + u.Username + "\nUID: " + u.Uid + "\nGID: " + u.Gid + "\nGroups: "
 	groupString := ""
 	groups, err := u.GroupIds()
 	if err != nil {
