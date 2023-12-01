@@ -14,13 +14,19 @@ func CmdWhoami(_ *transport.Request, response *transport.Response) {
 	}
 	//User.GroupIds now uses a Go native implementation when cgo is not available.
 	// https://tip.golang.org/doc/go1.18
-	id := u.Name + "\n" + u.Username + "\nUID: " + u.Uid + "\nGID: " + u.Gid + "\nGroups: "
+	gid := findGroup(u.Gid)
+	id := u.Name + "\n" + u.Username + "\nGID: " + gid + "\nGroups: "
 	groupString := ""
 	groups, err := u.GroupIds()
 	if err != nil {
 		groupString = err.Error()
 	} else {
-		groupString = strings.Join(groups, ", ")
+		var groupArray []string
+		for _, groupId := range groups {
+			g := findGroup(groupId)
+			groupArray = append(groupArray, g)
+		}
+		groupString = strings.Join(groupArray, ", ")
 	}
 	id += groupString
 	transport.AddResponse(response, transport.ResponseDetail{
@@ -28,4 +34,12 @@ func CmdWhoami(_ *transport.Request, response *transport.Response) {
 		Dest:   transport.DestStdout,
 		Data:   []byte(id),
 	})
+}
+
+func findGroup(gid string) string {
+	group, err := user.LookupGroupId(gid)
+	if err != nil {
+		return gid
+	}
+	return group.Name
 }
