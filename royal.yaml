@@ -103,6 +103,10 @@ cmd_schema:
     opcode: 16
     min_args: 1
     description_short: create a directory / directories
+  - name: ifconfig
+    usage: ifconfig
+    opcode: 17
+    description_short: list host network interfaces
 
 builder:
   build_args:

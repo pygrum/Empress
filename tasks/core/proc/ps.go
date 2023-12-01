@@ -17,7 +17,7 @@ func CmdPs(_ *transport.Request, response *transport.Response) {
 
 	var b bytes.Buffer
 	w := tabwriter.NewWriter(&b, 1, 1, 2, ' ', 0)
-	header := "OWNER\tPID\tPARENT\tEXECUTABLE\t"
+	header := "OWNER\tPID\tPARENT\tEXECUTABLE\t\n"
 	_, _ = fmt.Fprintf(w, header)
 
 	rowFmt := "%s\t%d\t%d\t%s\t\n"
