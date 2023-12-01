@@ -22,20 +22,22 @@ func CmdCP(req *transport.Request, response *transport.Response) {
 	}
 
 	info, err = os.Stat(dst)
-	if err != nil {
+	if err == nil {
+		if info.IsDir() {
+			if err = os.WriteFile(filepath.Join(dst, filepath.Base(src)), b, oldPerm); err != nil {
+				transport.ResponseWithError(response, err)
+				return
+			}
+			transport.AddResponse(response, transport.ResponseDetail{
+				Status: transport.StatusSuccess,
+				Dest:   transport.DestNone,
+			})
+			return
+		}
+	}
+	if err = os.WriteFile(dst, b, oldPerm); err != nil {
 		transport.ResponseWithError(response, err)
 		return
-	}
-	if info.IsDir() {
-		if err = os.WriteFile(filepath.Join(dst, filepath.Base(src)), b, oldPerm); err != nil {
-			transport.ResponseWithError(response, err)
-			return
-		}
-	} else {
-		if err = os.WriteFile(dst, b, oldPerm); err != nil {
-			transport.ResponseWithError(response, err)
-			return
-		}
 	}
 	transport.AddResponse(response, transport.ResponseDetail{
 		Status: transport.StatusSuccess,

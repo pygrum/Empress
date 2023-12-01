@@ -96,7 +96,7 @@ func (c *Client) poll() (*transport.Registration, error) {
 		"opcode":     taskReq.Opcode,
 		"num_args":   len(taskReq.Args),
 		"args":       strings.Join(strArgs, ", "),
-	})
+	}).Infof("received request")
 	taskResp := c.router.handle(taskReq)
 	c.SetResponse(taskResp)
 	// will loop and send response on the next connection
