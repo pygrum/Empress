@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/pygrum/Empress/transport"
 	"net"
+	"strings"
 	"text/tabwriter"
 )
 
@@ -18,7 +19,9 @@ func CmdIfconfig(req *transport.Request, response *transport.Response) {
 	w := tabwriter.NewWriter(&b, 1, 1, 2, ' ', 0)
 	rowFmt := "%s\t%s\t\n"
 	for _, iface := range interfaces {
-		valueFormat := `Flags=      <%s> 
+		valueFormat := `
+%s
+Flags=      <%s> 
 MTU:        %d
 Addresses:  %s
 Multicast:  %s
@@ -45,7 +48,7 @@ Index:      %d
 			}
 		}
 		_, _ = fmt.Fprintln(w, fmt.Sprintf(rowFmt, name, fmt.Sprintf(valueFormat,
-			flags, mtu, addresses, multicastAddresses, mac, index)))
+			strings.Repeat("=", len(name)), flags, mtu, addresses, multicastAddresses, mac, index)))
 	}
 	_ = w.Flush()
 	transport.AddResponse(response, transport.ResponseDetail{
