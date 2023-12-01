@@ -7,7 +7,6 @@ import (
 	"github.com/pygrum/Empress/c2"
 	"github.com/pygrum/Empress/config"
 	"github.com/pygrum/Empress/tasks"
-	"github.com/pygrum/Empress/tasks/core/fs"
 	"github.com/pygrum/Empress/transport"
 	log "github.com/sirupsen/logrus"
 	"math/rand"
@@ -51,8 +50,7 @@ func newClient() error {
 		return err
 	}
 	router := c2.NewRouter()
-	router.HandleFunc(tasks.OpLS, fs.CmdLS)
-
+	tasks.SetTasks(router)
 	client.SetRouter(router)
 	return nil
 }
