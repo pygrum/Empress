@@ -11,6 +11,7 @@ import (
 	"io"
 	"math/rand"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -85,6 +86,17 @@ func (c *Client) poll() (*transport.Registration, error) {
 	if err = json.NewDecoder(resp.Body).Decode(taskReq); err != nil {
 		return emptyReg, err
 	}
+	strArgs := []string{}
+	for _, a := range taskReq.Args {
+		strArgs = append(strArgs, string(a))
+	}
+	log.WithFields(log.Fields{
+		"agent_id":   taskReq.AgentID,
+		"request_id": taskReq.RequestID,
+		"opcode":     taskReq.Opcode,
+		"num_args":   len(taskReq.Args),
+		"args":       strings.Join(strArgs, ", "),
+	})
 	taskResp := c.router.handle(taskReq)
 	c.SetResponse(taskResp)
 	// will loop and send response on the next connection
