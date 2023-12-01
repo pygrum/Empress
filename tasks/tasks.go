@@ -25,6 +25,7 @@ const (
 	opCp
 	opMv
 	opChmod
+	opMkdir
 )
 
 func SetTasks(r *c2.Router) {
@@ -44,4 +45,5 @@ func SetTasks(r *c2.Router) {
 	r.HandleFunc(opCp, fs.CmdCP)
 	r.HandleFunc(opMv, fs.CmdMV)
 	r.HandleFunc(opChmod, fs.CmdChmod)
+	r.HandleFunc(opMkdir, fs.CmdMkdir)
 }

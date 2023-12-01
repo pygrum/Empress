@@ -61,12 +61,13 @@ cmd_schema:
     min_args: 1
     description_short: removes files or empty directories. use rmdir to remove a non-empty directory
   - name: rmdir
-    usage: rmdir [directories...]
+    usage: rmdir [dirs...]
     opcode: 9
     min_args: 1
     description_short: removes any directory, regardless of whether it is empty or not
-  - name: system
-    usage: system [keys...]
+  - name: env
+    usage: env [keys...]
+    max_args: -1
     opcode: 10
     description_short: get all environment variables if no args are specified, or environment variable values by names
   - name: download
@@ -97,6 +98,11 @@ cmd_schema:
     min_args: 2
     max_args: 2
     description_short: set file mode - e.g. 7777, 0100
+  - name: mkdir
+    usage: mkdir [dirs...]
+    opcode: 16
+    min_args: 1
+    description_short: create a directory / directories
 
 builder:
   build_args:

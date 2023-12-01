@@ -8,7 +8,7 @@ import (
 )
 
 func CmdChmod(req *transport.Request, response *transport.Response) {
-	mode, err := strconv.Atoi(string(req.Args[0]))
+	mode, err := strconv.ParseUint(string(req.Args[0]), 8, 32) // File modes are octal not decimal
 	if err != nil {
 		transport.ResponseWithError(response, errors.New("invalid file mode"))
 		return

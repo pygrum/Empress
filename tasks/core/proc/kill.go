@@ -13,11 +13,11 @@ func CmdKill(req *transport.Request, response *transport.Response) {
 	for _, arg := range req.Args {
 		pid, err := strconv.Atoi(string(arg))
 		if err != nil {
-			transport.ResponseWithError(response, errors.New("invalid core id"))
+			transport.ResponseWithError(response, errors.New("invalid process id"))
 			continue
 		}
 		if p, err := ps.FindProcess(pid); err == nil && p == nil {
-			transport.ResponseWithError(response, errors.New("core not found"))
+			transport.ResponseWithError(response, errors.New("process not found"))
 			continue
 		}
 		// get core to kill

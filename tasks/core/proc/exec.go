@@ -17,16 +17,14 @@ func CmdExec(req *transport.Request, response *transport.Response) {
 		var cOut, cErr bytes.Buffer
 		cmd.Stdout = &cOut
 		cmd.Stderr = &cErr
-		_ = cmd.Run()
-		if len(cOut.String()) != 0 {
-			transport.AddResponse(response, transport.ResponseDetail{
-				Status: transport.StatusSuccess,
-				Dest:   transport.DestStdout,
-				Data:   cOut.Bytes(),
-			})
-		}
-		if len(cErr.String()) != 0 {
+		if err := cmd.Run(); err != nil {
 			transport.ResponseWithError(response, errors.New(cErr.String()))
+			return
 		}
+		transport.AddResponse(response, transport.ResponseDetail{
+			Status: transport.StatusSuccess,
+			Dest:   transport.DestStdout,
+			Data:   cOut.Bytes(),
+		})
 	}
 }
