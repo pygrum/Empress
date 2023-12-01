@@ -38,13 +38,13 @@ Index:      %d
 		addrs, err := iface.Addrs()
 		if err == nil {
 			for _, a := range addrs {
-				addresses = a.String() + " "
+				addresses += " " + a.String()
 			}
 		}
 		multi, err := iface.Addrs()
 		if err == nil {
 			for _, m := range multi {
-				multicastAddresses = m.String() + " "
+				multicastAddresses += " " + m.String()
 			}
 		}
 		_, _ = fmt.Fprintln(w, fmt.Sprintf(rowFmt, name, fmt.Sprintf(valueFormat,
