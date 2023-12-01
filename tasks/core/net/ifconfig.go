@@ -18,8 +18,7 @@ func CmdIfconfig(req *transport.Request, response *transport.Response) {
 	w := tabwriter.NewWriter(&b, 1, 1, 2, ' ', 0)
 	rowFmt := "%s\t%s\t\n"
 	for _, iface := range interfaces {
-		valueFormat := `
-Flags=      <%s> 
+		valueFormat := `Flags=      <%s> 
 MTU:        %d
 Addresses:  %s
 Multicast:  %s
