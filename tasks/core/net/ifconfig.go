@@ -37,15 +37,20 @@ Index:      %d
 		var addresses, multicastAddresses string
 		addrs, err := iface.Addrs()
 		if err == nil {
+			var addArray []string
 			for _, a := range addrs {
-				addresses += " " + a.String()
+				addArray = append(addArray, a.String())
 			}
+			addresses = strings.Join(addArray, " | ")
 		}
 		multi, err := iface.Addrs()
 		if err == nil {
+			var addArray []string
 			for _, m := range multi {
-				multicastAddresses += " " + m.String()
+				addArray = append(addArray, m.String())
 			}
+			multicastAddresses = strings.Join(addArray, " | ")
+
 		}
 		_, _ = fmt.Fprintln(w, fmt.Sprintf(rowFmt, name, fmt.Sprintf(valueFormat,
 			strings.Repeat("=", len(name)), flags, mtu, addresses, multicastAddresses, mac, index)))
