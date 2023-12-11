@@ -17,7 +17,7 @@ func CmdExec(req *transport.Request, response *transport.Response) {
 		for i, t := range tokens {
 			tokens[i] = os.ExpandEnv(t)
 		}
-		cmd := exec.Command("cmd", "/c", tokens...)
+		cmd := exec.Command("cmd", append([]string{"/c"}, tokens...)...)
 		cmd.SysProcAttr = &syscall.SysProcAttr{
 			HideWindow: true,
 		}

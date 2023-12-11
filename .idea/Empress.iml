@@ -5,11 +5,7 @@
       <configuration sdkName="Python 3.10" />
     </facet>
   </component>
-  <component name="Go" enabled="true">
-    <buildTags>
-      <option name="os" value="linux" />
-    </buildTags>
-  </component>
+  <component name="Go" enabled="true" />
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$" />
     <orderEntry type="inheritedJdk" />
