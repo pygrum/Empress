@@ -116,10 +116,11 @@ func (c *Client) handle(conn net.Conn, regData []byte) error {
 			return err
 		}
 		log.Info("response marshalled successfully")
-		if _, err = conn.Write(data); err != nil {
+		n, err := conn.Write(data)
+		if err != nil {
 			return err
 		}
-		log.Info("wrote response to socket")
+		log.Infof("wrote %d bytes to socket", n)
 	}
 }
 
@@ -136,7 +137,7 @@ func (c *Client) poll() (*transport.Registration, error) {
 		}
 		body = bytes.NewReader(data)
 	}
-	req, err := http.NewRequest(http.MethodGet, c.Address, body)
+	req, err := http.NewRequest(http.MethodGet, c.HTTPAddress+"/", body)
 	if err != nil {
 		return emptyReg, err
 	}
@@ -172,6 +173,7 @@ func (c *Client) poll() (*transport.Registration, error) {
 	}).Infof("received request")
 	taskResp := c.router.handle(taskReq)
 	c.SetResponse(taskResp)
+	log.Info("processed request returned responses %v", taskResp.Responses)
 	// will loop and send response on the next connection
 	return nil, nil
 }

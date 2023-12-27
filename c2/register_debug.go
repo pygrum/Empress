@@ -24,8 +24,8 @@ func (c *Client) Register(regInfo *transport.Registration) error {
 	if err != nil {
 		return err
 	}
-	addr := c.Address + "/login"
-	req, err := http.NewRequest(http.MethodGet, addr, bytes.NewReader(data))
+	addr := c.HTTPAddress + "/login"
+	req, err := http.NewRequest(http.MethodPost, addr, bytes.NewReader(data))
 	if err != nil {
 		return err
 	}

@@ -10,6 +10,7 @@ const maxDuration time.Duration = 1<<63 - 1
 
 type Client struct {
 	Address      string
+	HTTPAddress  string
 	ClientInfo   *transport.Registration
 	HttpClient   *http.Client
 	Task         chan *transport.Request // A channel that receives tasks from the longPoll routine
@@ -18,14 +19,15 @@ type Client struct {
 	nextResponse *transport.Response
 }
 
-func NewClient(addr string) (*Client, error) {
+func NewClient(addr, httpAddr string) (*Client, error) {
 	return &Client{
 		ClientInfo: &transport.Registration{},
 		HttpClient: &http.Client{
 			Timeout: maxDuration, // Polling client. Timeout has no effect if we get a connection refused
 		},
-		Address: addr,
-		Task:    make(chan *transport.Request),
+		Address:     addr,
+		HTTPAddress: httpAddr,
+		Task:        make(chan *transport.Request),
 	}, nil
 }
 

