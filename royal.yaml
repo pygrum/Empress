@@ -118,6 +118,11 @@ builder:
       choices:
         - session
         - beacon
+    - name: use_tcp
+      type: bool
+      description: use the server's TLS listener for C2
+      default: false
+      required: false
 
     - name: debug
       type: bool

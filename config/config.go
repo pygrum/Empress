@@ -24,6 +24,9 @@ type Config struct {
 	AgentID string `json:"id"`
 	C2Host  string `json:"host"`
 	C2Port  string `json:"port"`
+	// whether to use a TCP connection
+	TCP       bool   `json:"tcp"`
+	CaCertPEM []byte `json:"ca_cert"` // used to verify server certificate
 	// agent attempts to register to the server every CallbackInterval±(CallbackSalt/1000) seconds
 	CallbackInterval time.Duration `json:"callback_interval"`
 	// Callback variance in milliseconds

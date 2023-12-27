@@ -17,8 +17,11 @@ def routine(req: BuildRequest) -> BuildResponse:
     cs = req.params.get("callback_salt")
     interval = req.params.get("interval")
     salt = req.params.get("salt")
+    ca_cert = req.params.get("ca_cert")
+
     # if true, then debug is true. otherwise false
     debug = str(req.params.get("debug")).lower() == "true"
+    use_tcp = str(req.params.get("use_tcp")).lower() == "true"
     mode = req.params.get("mode")
 
     if mode == "session":
@@ -36,6 +39,8 @@ def routine(req: BuildRequest) -> BuildResponse:
             "interval": int(interval),
             "salt": int(salt),
             "mode": mode,
+            "tcp": use_tcp,
+            "ca_cert": ca_cert,
         }
         j_string = json.dumps(j)
         f.write(j_string)
