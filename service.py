@@ -11,8 +11,8 @@ def routine(req: BuildRequest) -> BuildResponse:
     out = "empress"
 
     agent_id = req.params.get("id")  # definitely exists
-    host = req.params.get("host")
-    port = req.params.get("port")
+    host = req.params.get("lhost")
+    port = req.params.get("lport")
     ci = req.params.get("callback_interval")
     cs = req.params.get("callback_salt")
     interval = req.params.get("interval")
