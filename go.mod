@@ -4,4 +4,8 @@ go 1.21
 
 require github.com/sirupsen/logrus v1.9.3
 
-require golang.org/x/sys v0.14.0 // indirect
+require (
+	github.com/creack/pty v1.1.21 // indirect
+	golang.org/x/sys v0.15.0 // indirect
+	golang.org/x/term v0.15.0 // indirect
+)

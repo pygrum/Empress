@@ -107,6 +107,12 @@ cmd_schema:
     usage: ifconfig
     opcode: 17
     description_short: list host network interfaces
+  - name: shell
+    usage: shell RHOST RPORT
+    opcode: 18
+    min_args: 2
+    max_args: 2
+    description_short: initiate a reverse shell connection to a provided address
 
 builder:
   build_args:
