@@ -8,17 +8,17 @@ import (
 	"github.com/pygrum/Empress/transport"
 	"os"
 	"os/exec"
-	"strings"
 )
 
 func CmdExec(req *transport.Request, response *transport.Response) {
 	for _, arg := range req.Args {
 		command := string(arg)
-		tokens := strings.Split(command, " ")
-		for i, t := range tokens {
-			tokens[i] = os.ExpandEnv(t)
+		sh := os.Getenv("SHELL")
+		if len(sh) == 0 {
+			transport.ResponseWithError(response, errors.New("could not acquire default shell"))
+			return
 		}
-		cmd := exec.Command(tokens[0], tokens[1:]...)
+		cmd := exec.Command(sh, "-c", command)
 		var cOut, cErr bytes.Buffer
 		cmd.Stdout = &cOut
 		cmd.Stderr = &cErr
